@@ -67,7 +67,7 @@ export default function Footer() {
 
   return (
     <footer
-      className="bg-footer-bg text-footer-text"
+      className="mt-auto bg-footer-bg text-footer-text"
       role="contentinfo"
     >
       {/* Main footer content */}
