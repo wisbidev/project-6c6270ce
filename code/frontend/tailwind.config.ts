@@ -20,6 +20,7 @@ const config: Config = {
           bg: '#0F172A',         // --color-bg-darker
           text: '#94A3B8',       // --color-text-footer
           'text-heading': '#F1F5F9', // --color-text-footer-heading
+          border: '#334155',     // border color on dark footer bg
         },
         focus: '#6366F1',       // --color-focus
         'primary-light': '#A5B4FC', // --color-primary-light
