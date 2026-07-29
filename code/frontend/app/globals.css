@@ -4,33 +4,144 @@
 
 @layer base {
   :root {
-    --brand-primary: #6366F1;
-    --brand-accent: #8B5CF6;
-    --brand-dark: #1E293B;
-    --brand-light: #F8FAFC;
-    --brand-success: #10B981;
+    /* ── Color tokens ──────────────────────────────────────── */
+    --color-bg:                 #F8FAFC;
+    --color-surface:            #FFFFFF;
+    --color-surface-raised:     #FFFFFF;
+    --color-nav:                rgba(255, 255, 255, 0.92);
+    --color-border:             #E2E8F0;
+    --color-border-strong:       #475569;
+    --color-border-focus:       #6366F1;
+    --color-text:               #1E293B;
+    --color-text-muted:         #64748B;
+    --color-text-nav:           #475569;
+    --color-primary:            #6366F1;
+    --color-primary-hover:      #4F46E5;
+    --color-primary-text:       #FFFFFF;
+    --color-primary-light:      #A5B4FC;
+    --color-success:            #10B981;
+    --color-warning:            #F59E0B;
+    --color-danger:             #EF4444;
+    --color-danger-text:        #FCA5A5;
+    --color-focus:              #6366F1;
+    --color-bg-dark:            #1E293B;
+    --color-bg-darker:          #0F172A;
+    --color-bg-dark-surface:     #334155;
+    --color-text-on-dark:       #FFFFFF;
+    --color-text-muted-on-dark:  #CBD5E1;
+    --color-text-footer:        #94A3B8;
+    --color-text-footer-heading: #F1F5F9;
+    --color-illustration-bg:     #EEF2FF;
+    --color-illustration-bg-end: #F5F3FF;
+
+    /* ── Spacing tokens (base 4px) ─────────────────────────── */
+    --space-0:    0;
+    --space-1:    4px;
+    --space-1\.5: 6px;
+    --space-2:    8px;
+    --space-2\.5: 10px;
+    --space-3:    12px;
+    --space-3\.5: 14px;
+    --space-4:    16px;
+    --space-5:    20px;
+    --space-6:    24px;
+    --space-7:    28px;
+    --space-8:    32px;
+    --space-9:    36px;
+    --space-10:   40px;
+    --space-12:   48px;
+    --space-13:   52px;
+    --space-14:   56px;
+    --space-15:   60px;
+    --space-17:   68px;
+    --space-25:   100px;
+    --space-35:   140px;
+
+    /* ── Typography tokens ──────────────────────────────────── */
+    --text-xs:           0.8125rem;
+    --text-sm:           0.875rem;
+    --text-sm-nav:       0.9375rem;
+    --text-base:         1rem;
+    --text-lead:         1.1rem;
+    --text-lead-lg:      1.2rem;
+    --text-h3:           1.25rem;
+    --text-h2:           1.5rem;
+    --text-h1:           clamp(2rem, 4vw, 2.75rem);
+    --text-hero:         clamp(2.5rem, 6vw, 4rem);
+
+    /* ── Radius tokens ─────────────────────────────────────── */
+    --radius-xs: 4px;
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+
+    /* ── Shadow tokens ─────────────────────────────────────── */
+    --shadow-sm:      none;
+    --shadow-md:      0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-lg:      0 12px 40px rgba(0, 0, 0, 0.07);
+    --shadow-primary: 0 8px 24px rgba(99, 102, 241, 0.35);
+
+    /* ── Motion tokens ─────────────────────────────────────── */
+    --duration-fast:  200ms;
+    --duration-base:  250ms;
+    --duration-slow:  300ms;
+    --easing:         ease;
+
+    /* ── Layout tokens ─────────────────────────────────────── */
+    --container-max:  1200px;
+    --container-pad: 24px;
   }
 
   html {
     scroll-behavior: smooth;
   }
 
+  /* Disable smooth scroll when user prefers reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   body {
     @apply bg-brand-light text-brand-dark;
+    font-family: var(--font-sans), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Global focus ring (keyboard only) ──────────────────── */
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
   }
 }
 
 @layer components {
+  /* Primary CTA button */
   .btn-primary {
-    @apply bg-brand-primary hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200;
+    @apply no-underline;
   }
 
-  .input-field {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition-all duration-200;
+  /* Secondary button */
+  .btn-secondary {
+    @apply no-underline;
   }
 
+  /* Section heading */
   .section-heading {
     @apply text-3xl md:text-4xl font-bold text-brand-dark text-center mb-12;
+  }
+
+  /* Container utility */
+  .container {
+    max-width: var(--container-max);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-pad);
+    padding-right: var(--container-pad);
   }
 }
 
