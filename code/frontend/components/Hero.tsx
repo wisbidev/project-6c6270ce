@@ -1,3 +1,5 @@
+'use client'
+
 export default function Hero() {
   const scrollToContact = () => {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
