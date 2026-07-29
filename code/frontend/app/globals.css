@@ -4,33 +4,167 @@
 
 @layer base {
   :root {
-    --brand-primary: #6366F1;
-    --brand-accent: #8B5CF6;
-    --brand-dark: #1E293B;
-    --brand-light: #F8FAFC;
-    --brand-success: #10B981;
+    /* Brand colors */
+    --color-primary: #6366F1;
+    --color-primary-hover: #4F46E5;
+    --color-primary-text: #FFFFFF;
+    --color-primary-light: #A5B4FC;
+
+    /* Backgrounds */
+    --color-bg: #F8FAFC;
+    --color-bg-dark: #1E293B;
+    --color-bg-dark-surface: #334155;
+    --color-bg-darker: #0F172A;
+
+    /* Text */
+    --color-text: #1E293B;
+    --color-text-muted: #64748B;
+    --color-text-on-dark: #FFFFFF;
+    --color-text-muted-on-dark: #CBD5E1;
+    --color-text-footer: #94A3B8;
+    --color-text-footer-heading: #F1F5F9;
+
+    /* Borders */
+    --color-border: #E2E8F0;
+    --color-border-strong: #475569;
+    --color-border-focus: #6366F1;
+
+    /* States */
+    --color-success: #10B981;
+    --color-danger: #EF4444;
+    --color-danger-text: #FCA5A5;
+    --color-focus: #6366F1;
+
+    /* Brand */
+    --color-brand-accent: #8B5CF6;
+    --color-brand-success: #10B981;
+
+    /* Spacing */
+    --space-1: 4px;
+    --space-1-5: 6px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-3-5: 14px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-7: 28px;
+    --space-8: 32px;
+    --space-9: 36px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-15: 60px;
+    --space-17: 68px;
+    --space-25: 100px;
+
+    /* Typography */
+    --text-xs: 0.8125rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lead: 1.1rem;
+    --text-lead-lg: 1.2rem;
+    --text-h3: 1.25rem;
+    --text-h2: 1.5rem;
+    --text-h1: clamp(2rem, 4vw, 2.75rem);
+    --text-hero: clamp(2.5rem, 6vw, 4rem);
+
+    /* Radius */
+    --radius-xs: 4px;
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+
+    /* Shadows */
+    --shadow-md: 0 8px 24px rgba(0,0,0,.08);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.07);
+    --shadow-primary: 0 8px 24px rgba(99,102,241,.35);
+
+    /* Duration */
+    --duration-fast: 200ms;
+    --duration-base: 250ms;
+    --duration-slow: 300ms;
   }
 
   html {
     scroll-behavior: smooth;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   body {
-    @apply bg-brand-light text-brand-dark;
+    @apply bg-[#F8FAFC] text-[#1E293B];
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-brand-primary hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200;
+    @apply bg-[#6366F1] text-white font-semibold;
+    padding: 14px 32px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--duration-base) ease,
+                transform var(--duration-base) ease,
+                box-shadow var(--duration-base) ease;
   }
 
-  .input-field {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition-all duration-200;
+  .btn-primary:hover:not(:disabled) {
+    background-color: #4F46E5;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99,102,241,.35);
   }
 
-  .section-heading {
-    @apply text-3xl md:text-4xl font-bold text-brand-dark text-center mb-12;
+  .btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .btn-primary:focus-visible {
+    outline: 3px solid #6366F1;
+    outline-offset: 2px;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent text-white font-semibold;
+    padding: 14px 32px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 2px solid #475569;
+    cursor: pointer;
+    transition: border-color var(--duration-base) ease,
+                color var(--duration-base) ease,
+                transform var(--duration-base) ease;
+  }
+
+  .btn-secondary:hover {
+    border-color: #6366F1;
+    color: #A5B4FC;
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary:focus-visible {
+    outline: 3px solid #6366F1;
+    outline-offset: 2px;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
   }
 }
 
