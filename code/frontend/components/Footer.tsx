@@ -50,7 +50,7 @@ const ChevronUpIcon = () => (
     aria-hidden="true"
     focusable="false"
   >
-    <path d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    <polyline points="18 15 12 9 6 15" />
   </svg>
 )
 
@@ -67,10 +67,8 @@ export default function Footer() {
 
   return (
     <footer className="mt-auto bg-footer-bg text-footer-text">
-      {/* Main footer content */}
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 py-12">
-          {/* Brand + Copyright */}
           <div className="text-center md:text-left">
             <h3 className="text-[0.875rem] font-bold text-footer-text-heading mb-2">
               {footerData.brand.name}
@@ -80,7 +78,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Social links */}
           <nav aria-label="Social media links">
             <ul className="flex items-center justify-center gap-3" role="list">
               {footerData.socialLinks.map(({ platform, href, ariaLabel }) => {
@@ -95,7 +92,7 @@ export default function Footer() {
                       className="
                         inline-flex items-center justify-center
                         w-9 h-9 rounded-[8px]
-                        border border-[#334155]
+                        border border-footer-border
                         text-footer-text
                         transition-colors duration-200
                         hover:border-focus hover:text-primary-light hover:bg-[rgba(99,102,241,0.1)]
@@ -111,10 +108,8 @@ export default function Footer() {
           </nav>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-[#334155]" />
+        <div className="border-t border-footer-border" />
 
-        {/* Back-to-top */}
         <div className="flex justify-center py-6">
           <button
             type="button"
@@ -124,7 +119,7 @@ export default function Footer() {
               inline-flex items-center gap-2
               text-footer-text text-[0.8125rem] leading-[1.5]
               px-4 py-2 rounded-[8px]
-              border border-[#334155]
+              border border-footer-border
               transition-colors duration-200
               hover:border-focus hover:text-primary-light hover:bg-[rgba(99,102,241,0.1)]
               focus-visible:outline-2 focus-visible:outline focus-visible:outline-focus focus-visible:outline-offset-2
