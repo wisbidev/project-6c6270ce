@@ -46,15 +46,14 @@ export default async function Features({ data }: FeaturesProps = {}) {
           </h2>
         </header>
 
-        {/* Feature Grid */}
+        {/* Feature Grid — 32px gap (--space-8) */}
         <div
-          className="grid gap-6
+          className="grid gap-8
                      grid-cols-1        /* Mobile: ≤767px */
                      md:grid-cols-2    /* Tablet: 768–1023px */
                      lg:grid-cols-3    /* Desktop: ≥1024px */
                      max-w-[1200px]
                      mx-auto"
-          style={{ animationDelay: '0ms' }}
         >
           {features.map((feature, index) => (
             <div
