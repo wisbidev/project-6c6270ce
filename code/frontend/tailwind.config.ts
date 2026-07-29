@@ -15,9 +15,22 @@ const config: Config = {
           light: '#F8FAFC',      // Light background
           success: '#10B981',    // Success green
         },
+        // Semantic tokens from design/design-system.md
+        footer: {
+          bg: '#0F172A',         // --color-bg-darker
+          text: '#94A3B8',       // --color-text-footer
+          'text-heading': '#F1F5F9', // --color-text-footer-heading
+          border: '#334155',     // border color on dark footer bg
+        },
+        focus: '#6366F1',       // --color-focus
+        'primary-light': '#A5B4FC', // --color-primary-light
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        'radius-xs': '4px',
+        'radius-sm': '8px',
       },
     },
   },
