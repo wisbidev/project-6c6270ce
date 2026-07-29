@@ -171,6 +171,11 @@
     padding-left: 24px;
     padding-right: 24px;
   }
+
+  /* Section heading — shared across Hero, Features, Contact sections */
+  .section-heading {
+    @apply text-3xl md:text-4xl font-bold text-[#1E293B] text-center mb-12;
+  }
 }
 
 @layer utilities {
