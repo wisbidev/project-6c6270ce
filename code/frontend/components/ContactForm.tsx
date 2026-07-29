@@ -1,189 +1,393 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import React, { useState, useCallback, type FormEvent } from 'react'
+import {
+  submitContactForm,
+  validationMessages,
+  ctaSection,
+  successState,
+  type ContactFormData,
+  type FieldName,
+} from '@/lib/mock/cta-with-contact-form'
 
-interface FormData {
-  name: string
-  email: string
-  message: string
+// ─── Spinner icon (20×20, stroke 2, matches design system) ──────────────────
+function SpinnerIcon() {
+  return (
+    <svg
+      className="animate-spin h-5 w-5 shrink-0"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+      />
+    </svg>
+  )
 }
 
-interface FormErrors {
-  name?: string
-  email?: string
-  message?: string
+// ─── Success checkmark icon (64×64, matches design system §1.6) ─────────────
+function CheckmarkIcon() {
+  return (
+    <svg
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      fill="none"
+      aria-hidden="true"
+      className="mx-auto mb-6"
+    >
+      <circle cx="32" cy="32" r="30" stroke="#10B981" strokeWidth="2" />
+      <path
+        d="M20 32l9 9 15-15"
+        stroke="#10B981"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
 }
 
+// ─── Form field error message ─────────────────────────────────────────────────
+function FieldError({ message }: { message: string }) {
+  return (
+    <p
+      className="mt-1 text-xs leading-6"
+      style={{ color: 'var(--color-danger-text)' }}
+      role="alert"
+    >
+      {message}
+    </p>
+  )
+}
+
+// ─── ContactForm ───────────────────────────────────────────────────────────────
 export default function ContactForm() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
     message: '',
   })
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({})
+  const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [isSuccess, setIsSuccess] = useState(false)
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {}
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required'
-    } else if (formData.name.length > 100) {
-      newErrors.name = 'Name must be 100 characters or less'
+  // ── Validation ─────────────────────────────────────────────────────────────
+  const validateField = useCallback((name: FieldName, value: string): string | undefined => {
+    if (name === 'name') {
+      if (!value.trim()) return validationMessages.name.required
+      if (value.length > 100) return validationMessages.name.maxLength
     }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address'
+    if (name === 'email') {
+      if (!value.trim()) return validationMessages.email.required
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return validationMessages.email.invalid
     }
-
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required'
-    } else if (formData.message.length > 1000) {
-      newErrors.message = 'Message must be 1000 characters or less'
+    if (name === 'message') {
+      if (!value.trim()) return validationMessages.message.required
+      if (value.length > 1000) return validationMessages.message.maxLength
     }
+    return undefined
+  }, [])
 
+  const validateAll = useCallback((): boolean => {
+    const newErrors: Partial<Record<FieldName, string>> = {}
+    const fields: FieldName[] = ['name', 'email', 'message']
+    let valid = true
+    for (const field of fields) {
+      const err = validateField(field, formData[field])
+      if (err) {
+        newErrors[field] = err
+        valid = false
+      }
+    }
     setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    return valid
+  }, [formData, validateField])
+
+  // ── Handlers ────────────────────────────────────────────────────────────────
+  const handleChange = (name: FieldName, value: string) => {
+    const max = name === 'name' ? 100 : name === 'message' ? 1000 : 254
+    const capped = value.length > max ? value.slice(0, max) : value
+    setFormData((prev) => ({ ...prev, [name]: capped }))
+    if (touched[name]) {
+      const err = validateField(name, capped)
+      setErrors((prev) => ({ ...prev, [name]: err }))
+    }
+  }
+
+  const handleBlur = (name: FieldName) => {
+    setTouched((prev) => ({ ...prev, [name]: true }))
+    const err = validateField(name, formData[name])
+    setErrors((prev) => ({ ...prev, [name]: err }))
   }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setSubmitError(null)
 
-    if (!validateForm()) {
+    setTouched({ name: true, email: true, message: true })
+
+    if (!validateAll()) return
+
+    setIsSubmitting(true)
+
+    const endpoint = process.env.NEXT_PUBLIC_FORM_ENDPOINT ?? 'mailto:hello@helloword.com'
+    if (endpoint.startsWith('mailto:')) {
+      const subject = encodeURIComponent(`Contact from ${formData.name}`)
+      const body = encodeURIComponent(
+        `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
+      )
+      window.location.href = `${endpoint}?subject=${subject}&body=${body}`
+      setIsSubmitting(false)
+      setIsSuccess(true)
       return
     }
 
-    // Use mailto: as fallback, or third-party service if configured
-    const formEndpoint = process.env.NEXT_PUBLIC_FORM_ENDPOINT || 'mailto:hello@helloword.com'
+    const response = await submitContactForm(formData)
+    setIsSubmitting(false)
 
-    if (formEndpoint.startsWith('mailto:')) {
-      const subject = encodeURIComponent(`Contact from ${formData.name}`)
-      const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`)
-      window.location.href = `${formEndpoint}?subject=${subject}&body=${body}`
-      setIsSubmitted(true)
+    if (response.success) {
+      setIsSuccess(true)
     } else {
-      try {
-        const response = await fetch(formEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        })
-
-        if (!response.ok) {
-          throw new Error('Submission failed')
-        }
-
-        setIsSubmitted(true)
-      } catch {
-        setSubmitError('Something went wrong. Please try again.')
-      }
+      setSubmitError(response.error ?? 'Something went wrong. Please try again.')
     }
   }
 
-  const handleChange = (field: keyof FormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }))
-    }
+  const handleReset = () => {
+    setFormData({ name: '', email: '', message: '' })
+    setErrors({})
+    setTouched({})
+    setSubmitError(null)
+    setIsSuccess(false)
   }
 
-  if (isSubmitted) {
-    return (
-      <section id="contact" className="py-20 bg-brand-light">
-        <div className="container mx-auto px-4">
-          <div className="max-w-xl mx-auto text-center">
-            <div className="text-6xl mb-6">✅</div>
-            <h2 className="text-3xl font-bold text-brand-dark mb-4">
-              Cảm ơn bạn!
-            </h2>
-            <p className="text-gray-600">
-              Chúng tôi sẽ liên hệ lại với bạn sớm nhất có thể.
-            </p>
-          </div>
-        </div>
-      </section>
-    )
-  }
+  // ── Styles (design system tokens) ─────────────────────────────────────────
+  const sectionBg = 'linear-gradient(180deg, #1E293B 0%, #0F172A 100%)'
+  const cardBg = 'var(--color-bg-dark-surface, #334155)'
+  const inputBg = 'rgba(255,255,255,0.08)'
+  const inputBorder = 'rgba(255,255,255,0.15)'
+  const inputFocusRing = 'var(--color-border-focus, #6366F1)'
 
   return (
-    <section id="contact" className="py-20 bg-brand-light">
-      <div className="container mx-auto px-4">
-        <h2 className="section-heading">Liên hệ với chúng tôi</h2>
-        <p className="text-center text-gray-600 mb-8 max-w-xl mx-auto">
-          Bạn có câu hỏi hoặc muốn tìm hiểu thêm? Điền vào form dưới đây và chúng tôi sẽ phản hồi sớm nhất.
-        </p>
-
-        <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-6">
-          {submitError && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-              {submitError}
-            </div>
-          )}
-
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="name"
-              value={formData.name}
-              onChange={(e) => handleChange('name', e.target.value)}
-              maxLength={100}
-              className={`input-field ${errors.name ? 'border-red-500 focus:ring-red-500' : ''}`}
-              placeholder="Nguyễn Văn A"
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={formData.email}
-              onChange={(e) => handleChange('email', e.target.value)}
-              className={`input-field ${errors.email ? 'border-red-500 focus:ring-red-500' : ''}`}
-              placeholder="email@example.com"
-            />
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-              Message <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              id="message"
-              value={formData.message}
-              onChange={(e) => handleChange('message', e.target.value)}
-              maxLength={1000}
-              rows={5}
-              className={`input-field resize-none ${errors.message ? 'border-red-500 focus:ring-red-500' : ''}`}
-              placeholder="Nội dung tin nhắn của bạn..."
-            />
-            {errors.message && (
-              <p className="mt-1 text-sm text-red-600">{errors.message}</p>
-            )}
-            <p className="mt-1 text-sm text-gray-500 text-right">
-              {formData.message.length}/1000
+    <section
+      id="contact"
+      style={{ background: sectionBg }}
+      className="py-24 px-6"
+      aria-labelledby="cta-heading"
+    >
+      <div className="container mx-auto max-w-2xl">
+        {/* Success state */}
+        {isSuccess ? (
+          <div className="text-center py-16" role="status" aria-live="polite">
+            <CheckmarkIcon />
+            <h2
+              id="cta-heading"
+              className="text-3xl font-bold mb-4"
+              style={{ color: 'var(--color-success)' }}
+            >
+              {successState.heading}
+            </h2>
+            <p
+              className="mb-8 text-lg"
+              style={{ color: 'var(--color-text-muted-on-dark)' }}
+            >
+              {successState.description}
             </p>
+            <button
+              type="button"
+              onClick={handleReset}
+              className="btn-secondary"
+            >
+              {successState.resetButtonLabel}
+            </button>
           </div>
+        ) : (
+          <>
+            {/* Section header */}
+            <div className="text-center mb-12">
+              <span
+                className="inline-block text-xs font-semibold tracking-widest mb-4"
+                style={{ color: 'var(--color-primary-light)' }}
+              >
+                {ctaSection.label}
+              </span>
+              <h2
+                id="cta-heading"
+                className="text-3xl md:text-4xl font-bold mb-4 text-white"
+              >
+                {ctaSection.title}
+              </h2>
+              <p
+                className="text-base leading-relaxed max-w-lg mx-auto"
+                style={{ color: 'var(--color-text-muted-on-dark)' }}
+              >
+                {ctaSection.description}
+              </p>
+            </div>
 
-          <button type="submit" className="btn-primary w-full">
-            Send
-          </button>
-        </form>
+            {/* Form card */}
+            <div
+              className="rounded-2xl p-8"
+              style={{ background: cardBg }}
+            >
+              <form onSubmit={handleSubmit} noValidate>
+                {/* Form fields */}
+                <div className="space-y-6">
+                  {/* Name */}
+                  <div>
+                    <label
+                      htmlFor="contact-name"
+                      className="block text-sm font-medium mb-2"
+                      style={{ color: 'var(--color-text-on-dark)' }}
+                    >
+                      Your Name <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="contact-name"
+                      value={formData.name}
+                      onChange={(e) => handleChange('name', e.target.value)}
+                      onBlur={() => handleBlur('name')}
+                      maxLength={100}
+                      aria-describedby={errors.name ? 'name-error' : undefined}
+                      aria-invalid={!!errors.name}
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 rounded-lg text-white transition-all duration-200 focus:outline-none focus:ring-2"
+                      style={{
+                        background: inputBg,
+                        border: `1px solid ${errors.name ? '#EF4444' : inputBorder}`,
+                        opacity: isSubmitting ? 0.7 : 1,
+                        '--tw-ring-color': inputFocusRing,
+                      } as React.CSSProperties}
+                    />
+                    {errors.name ? (
+                      <FieldError message={errors.name} />
+                    ) : (
+                      <p className="mt-1 text-xs" style={{ color: 'var(--color-text-muted-on-dark)' }}>
+                        {formData.name.length}/100
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label
+                      htmlFor="contact-email"
+                      className="block text-sm font-medium mb-2"
+                      style={{ color: 'var(--color-text-on-dark)' }}
+                    >
+                      Email Address <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="contact-email"
+                      value={formData.email}
+                      onChange={(e) => handleChange('email', e.target.value)}
+                      onBlur={() => handleBlur('email')}
+                      aria-describedby={errors.email ? 'email-error' : undefined}
+                      aria-invalid={!!errors.email}
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 rounded-lg text-white transition-all duration-200 focus:outline-none focus:ring-2"
+                      style={{
+                        background: inputBg,
+                        border: `1px solid ${errors.email ? '#EF4444' : inputBorder}`,
+                        opacity: isSubmitting ? 0.7 : 1,
+                        '--tw-ring-color': inputFocusRing,
+                      } as React.CSSProperties}
+                    />
+                    {errors.email && <FieldError message={errors.email} />}
+                  </div>
+
+                  {/* Message */}
+                  <div>
+                    <label
+                      htmlFor="contact-message"
+                      className="block text-sm font-medium mb-2"
+                      style={{ color: 'var(--color-text-on-dark)' }}
+                    >
+                      Message <span className="text-red-400">*</span>
+                    </label>
+                    <textarea
+                      id="contact-message"
+                      value={formData.message}
+                      onChange={(e) => handleChange('message', e.target.value)}
+                      onBlur={() => handleBlur('message')}
+                      maxLength={1000}
+                      rows={5}
+                      aria-describedby={errors.message ? 'message-error' : undefined}
+                      aria-invalid={!!errors.message}
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 rounded-lg text-white transition-all duration-200 focus:outline-none focus:ring-2 resize-none"
+                      style={{
+                        background: inputBg,
+                        border: `1px solid ${errors.message ? '#EF4444' : inputBorder}`,
+                        opacity: isSubmitting ? 0.7 : 1,
+                        '--tw-ring-color': inputFocusRing,
+                      } as React.CSSProperties}
+                    />
+                    <div className="flex justify-between items-start mt-1">
+                      {errors.message ? (
+                        <FieldError message={errors.message} />
+                      ) : (
+                        <span />
+                      )}
+                      <span
+                        className="text-xs"
+                        style={{ color: 'var(--color-text-muted-on-dark)' }}
+                      >
+                        {formData.message.length}/1000
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Submission error */}
+                {submitError && (
+                  <div
+                    className="mt-6 px-4 py-3 rounded-lg text-sm"
+                    style={{
+                      background: 'rgba(239,68,68,0.15)',
+                      border: '1px solid rgba(239,68,68,0.4)',
+                      color: '#FCA5A5',
+                    }}
+                    role="alert"
+                  >
+                    {submitError}
+                  </div>
+                )}
+
+                {/* Submit button */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn-primary w-full mt-6 flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <SpinnerIcon />
+                      Sending...
+                    </>
+                  ) : (
+                    'Send'
+                  )}
+                </button>
+              </form>
+            </div>
+          </>
+        )}
       </div>
     </section>
   )
