@@ -1,216 +1,116 @@
-# Test Cases — CTA with Contact Form (LAND-003)
+# Test Cases — CTA with contact form
 
-**Module:** landing
-**Risk level:** Medium — form collects visitor data and must provide clear inline feedback.
-**Tester:** Test (Linh)
-**Date:** 2025-07-18
+Module: `landing`
+Requirement: LAND-003
+Risk level: Medium — the form is the primary conversion action; submission goes to an external endpoint, so form data preservation and inline feedback matter most.
 
----
+## Happy-path scenarios
 
-## 1. Default state — section renders with all fields
+### TC-CTA-001 — CTA section renders with all expected elements
 
-**Requirement traceability:** LAND-003 Behaviour 1–3, AC-1
-
-**Scenario:** CTA section displays heading, description, and form fields
-**Given** The landing page is loaded
-**When** The visitor scrolls to the CTA section
-**Then** The visitor sees:
-- A section heading (e.g. "Ready to say Hello?" or similar)
-- A descriptive paragraph encouraging contact
-- A form with three labeled fields: Name (text input), Email (email input), Message (textarea)
-- A submit button labelled "Send"
-
-**Setup:** Navigate to the landing page, scroll below the features section.
+| Field | Value |
+|---|---|
+| **Scenario** | CTA section is visible with heading, description, and form fields |
+| **Given** | A visitor scrolls to or navigates to the CTA section |
+| **When** | The section is rendered on the page |
+| **Then** | The visitor sees: (1) a section heading encouraging contact, (2) descriptive/subtitle text below the heading, (3) a Name text input field, (4) an Email email input field, (5) a Message textarea field, and (6) a "Send" submit button |
+| **Requirement** | LAND-003 — Behaviour 1, 2, 3; AC-1 |
 
 ---
 
-## 2. Successful submission — all fields valid
+### TC-CTA-002 — Visitor submits a valid form and sees a success message
 
-**Requirement traceability:** LAND-003 Behaviour 4–5, AC-2
-
-**Scenario:** Visitor submits the form with fully valid data
-**Given** The visitor has filled in:
-- "Name" with a valid name (≤100 characters)
-- "Email" with a valid email format (e.g. `user@example.com`)
-- "Message" with valid text (≤1000 characters)
-**When** The visitor clicks the "Send" button
-**Then**
-- The form fields are hidden or cleared
-- A success message is displayed (e.g. "Thanks — we'll get back to you soon")
-- A green checkmark icon is visible
-- A "Send Another Message" button is available to reset the form
+| Field | Value |
+|---|---|
+| **Scenario** | Valid form submission replaces the form with a success message |
+| **Given** | The CTA section is displayed and the form fields are empty and enabled |
+| **When** | The visitor enters a valid name ("Nguyen Van A"), a valid email ("nguyen@example.com"), a valid message ("I'd like to learn more about your product."), and clicks the "Send" button |
+| **Then** | (1) The form fields are hidden or cleared, (2) a success message such as "Thanks — we'll get back to you soon" is displayed, and (3) the form data is submitted via email (mailto or third-party service) |
+| **Requirement** | LAND-003 — Behaviour 5; AC-2 |
 
 ---
 
-## 3. Name empty validation
+### TC-CTA-003 — Name field accepts exactly 100 characters
 
-**Requirement traceability:** LAND-003 Behaviour 4, AC-3, Failure — name empty
-
-**Scenario:** Visitor submits with the name field left empty
-**Given** The visitor has filled in valid email and message, but left the name field empty
-**When** The visitor clicks the "Send" button
-**Then**
-- An inline error message "Name is required" (or "Please enter your name.") appears below the name field
-- The name field's border turns red (`--color-danger`)
-- No data is sent
-- The form data in other fields is preserved
+| Field | Value |
+|---|---|
+| **Scenario** | Name field accepts input at the maximum character limit |
+| **Given** | The CTA section is displayed and the name field is empty |
+| **When** | The visitor types a name that is exactly 100 characters long |
+| **Then** | All 100 characters are accepted into the field; no truncation or error is shown |
+| **Requirement** | LAND-003 — Data touched: Name max 100 characters; Boundary: name max accepted |
 
 ---
 
-## 4. Invalid email format validation
+### TC-CTA-004 — Message field accepts exactly 1000 characters
 
-**Requirement traceability:** LAND-003 Behaviour 4, AC-4, Failure — email malformed
-
-**Scenario:** Visitor submits with an invalid email address
-**Given** The visitor has entered a valid name and message, but the email field contains "abc" (not a valid email format)
-**When** The visitor clicks the "Send" button
-**Then**
-- An inline error message "Please enter a valid email address" appears below the email field
-- The email field's border turns red (`--color-danger`)
-- No data is sent
-- The form data in other fields is preserved
+| Field | Value |
+|---|---|
+| **Scenario** | Message textarea accepts input at the maximum character limit |
+| **Given** | The CTA section is displayed and the message field is empty |
+| **When** | The visitor types a message that is exactly 1000 characters long |
+| **Then** | All 1000 characters are accepted into the textarea; no truncation or error is shown |
+| **Requirement** | LAND-003 — Data touched: Message max 1000 characters; Boundary: message max accepted |
 
 ---
 
-## 5. Email empty validation
+### TC-CTA-005 — Name field is capped at 100 characters when typing beyond the limit
 
-**Requirement traceability:** LAND-003 Failure — email empty
-
-**Scenario:** Visitor submits with the email field left empty
-**Given** The visitor has filled in valid name and message, but left the email field empty
-**When** The visitor clicks the "Send" button
-**Then**
-- An inline error message "Email is required" appears below the email field
-- The email field's border turns red (`--color-danger`)
-- No data is sent
-- The form data in other fields is preserved
+| Field | Value |
+|---|---|
+| **Scenario** | Name input does not accept more than 100 characters |
+| **Given** | The CTA section is displayed and the name field already contains 100 characters |
+| **When** | The visitor attempts to type a 101st character into the name field |
+| **Then** | The 101st character is not entered; the field value remains at 100 characters |
+| **Requirement** | LAND-003 — Behaviour 6; AC-6 |
 
 ---
 
-## 6. Message empty validation
+### TC-CTA-006 — Message field is capped at 1000 characters when typing beyond the limit
 
-**Requirement traceability:** LAND-003 Behaviour 4, AC-5, Failure — message empty
-
-**Scenario:** Visitor submits with the message field left empty
-**Given** The visitor has filled in valid name and email, but left the message field empty
-**When** The visitor clicks the "Send" button
-**Then**
-- An inline error message "Message is required" appears below the message field
-- The message field's border turns red (`--color-danger`)
-- No data is sent
-- The form data in other fields is preserved
+| Field | Value |
+|---|---|
+| **Scenario** | Message textarea does not accept more than 1000 characters |
+| **Given** | The CTA section is displayed and the message field already contains 1000 characters |
+| **When** | The visitor attempts to type a 1001st character into the message textarea |
+| **Then** | The 1001st character is not entered; the field value remains at 1000 characters |
+| **Requirement** | LAND-003 — Behaviour 6; AC-6 |
 
 ---
 
-## 7. Name max-length boundary — exactly 100 characters
+### TC-CTA-007 — CTA section is responsive on mobile
 
-**Requirement traceability:** LAND-003 Behaviour 2, AC-6, Failure — boundary name max
-
-**Scenario:** Visitor enters a name that is exactly 100 characters long
-**Given** The visitor types 100 characters into the name field
-**When** The visitor attempts to type a 101st character
-**Then** The 101st character is not accepted — the input is capped at 100 characters (`maxlength` attribute prevents further input)
-**And** The visitor can submit the form with the 100-character name and valid email/message
-
----
-
-## 8. Name over limit — capped at 100 characters
-
-**Requirement traceability:** LAND-003 Failure — name over limit
-
-**Scenario:** Visitor pastes or attempts to enter more than 100 characters in the name field
-**Given** The name input has a `maxlength` attribute of 100
-**When** The visitor pastes a string of 101+ characters into the name field
-**Then** The value is truncated to 100 characters (no more than 100 characters are accepted)
+| Field | Value |
+|---|---|
+| **Scenario** | The CTA section and form are fully usable on mobile viewports |
+| **Given** | The page is viewed on a mobile device with viewport width ≤ 767px |
+| **When** | The CTA section is rendered |
+| **Then** | The heading, description, all three form fields, and the "Send" button are fully visible and usable without horizontal scrolling |
+| **Requirement** | LAND-003 — AC-8 |
 
 ---
 
-## 9. Message max-length boundary — exactly 1000 characters
+### TC-CTA-008 — Hero CTA button scrolls smoothly to the contact form
 
-**Requirement traceability:** LAND-003 Behaviour 2, AC-6, Failure — boundary message max
-
-**Scenario:** Visitor enters a message that is exactly 1000 characters long
-**Given** The visitor types 1000 characters into the message textarea
-**When** The visitor attempts to type a 1001st character
-**Then** The 1001st character is not accepted — the input is capped at 1000 characters (`maxlength` attribute prevents further input)
-**And** The visitor can submit the form with the 1000-character message and valid name/email
-
----
-
-## 10. Message over limit — capped at 1000 characters
-
-**Requirement traceability:** LAND-003 Failure — message over limit
-
-**Scenario:** Visitor pastes or attempts to enter more than 1000 characters in the message field
-**Given** The message textarea has a `maxlength` attribute of 1000
-**When** The visitor pastes a string of 1001+ characters into the message field
-**Then** The value is truncated to 1000 characters (no more than 1000 characters are accepted)
+| Field | Value |
+|---|---|
+| **Scenario** | Clicking the hero's CTA button scrolls to the CTA section |
+| **Given** | The landing page is loaded and the hero section is visible |
+| **When** | The visitor clicks the "Get in touch" button in the hero section |
+| **Then** | The page scrolls smoothly to the CTA section with the contact form; the CTA section is now visible at the top of the viewport (or near it) |
+| **Requirement** | LAND-001 — AC-4 (hero → CTA smooth scroll); LAND-003 — Behaviour 8 |
 
 ---
 
-## 11. Network error — form data preserved
+## Traceability
 
-**Requirement traceability:** LAND-003 Behaviour 6, AC-7, Failure — network failure
-
-**Scenario:** Form submission fails due to a network error
-**Given** The visitor has filled in all three fields with valid data
-**And** The network is unavailable (or the mailto/form endpoint is unreachable)
-**When** The visitor clicks the "Send" button
-**Then**
-- An inline error message "Something went wrong. Please try again." (or similar) is displayed
-- The submit button re-enables (is no longer in loading/disabled state)
-- All form field data remains filled in and is not cleared
-
----
-
-## 12. Mobile responsive — form usable on small screens
-
-**Requirement traceability:** LAND-003 Behaviour 8, AC-8
-
-**Scenario:** The CTA section renders correctly on mobile viewports
-**Given** The page is viewed on a device with a viewport width between 320px and 767px
-**When** The visitor scrolls to the CTA section
-**Then**
-- The section heading, description, and all three form fields are fully visible without horizontal scroll
-- The submit button spans the full width of the form (or is comfortably tappable)
-- All text is readable and inputs are usable
-
----
-
-## 13. Loading state during submission
-
-**Requirement traceability:** LAND-003 Behaviour 4 (form component states)
-
-**Scenario:** The submit button shows a loading state while the form is being submitted
-**Given** The visitor has filled in all three fields with valid data
-**When** The visitor clicks the "Send" button
-**Then** While the submission is in progress:
-- The button text changes to "Sending..."
-- A spinner icon is visible inside the button
-- The submit button is disabled (cannot be clicked again)
-
----
-
-## 14. Reset after success — "Send Another Message" restores the form
-
-**Requirement traceability:** LAND-003 Behaviour 5, Design System §2.7
-
-**Scenario:** After a successful submission, the visitor can send another message
-**Given** The form is in the success state (success message displayed, form hidden)
-**When** The visitor clicks the "Send Another Message" button
-**Then**
-- The success state is replaced by the original form with all fields empty
-- The submit button is re-enabled with the label "Send"
-- No data from the previous submission persists in the fields
-
----
-
-## 15. Hero CTA button scrolls to the contact form
-
-**Requirement traceability:** LAND-001 AC-4, LAND-003 Behaviour 8
-
-**Scenario:** The hero section's CTA button scrolls smoothly to the CTA section
-**Given** The visitor is at the top of the landing page (hero section)
-**When** The visitor clicks the hero CTA button (e.g. "Get in touch")
-**Then** The page scrolls smoothly to the CTA with contact form section
-**And** The contact form section comes into view
+| Test case | Requirement(s) |
+|---|---|
+| TC-CTA-001 | LAND-003 (AC-1) |
+| TC-CTA-002 | LAND-003 (AC-2) |
+| TC-CTA-003 | LAND-003 (Data touched: Name max 100 chars) |
+| TC-CTA-004 | LAND-003 (Data touched: Message max 1000 chars) |
+| TC-CTA-005 | LAND-003 (AC-6) |
+| TC-CTA-006 | LAND-003 (AC-6) |
+| TC-CTA-007 | LAND-003 (AC-8) |
+| TC-CTA-008 | LAND-001 (AC-4), LAND-003 (Behaviour 8) |
