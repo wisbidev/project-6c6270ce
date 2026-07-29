@@ -1,21 +1,22 @@
 /**
  * Hero — Full-viewport hero section.
  *
- * Design tokens used:
+ * Design tokens used (from design/design-system.md):
  *   --color-illustration-bg      (#EEF2FF) — gradient start
- *   --color-illustration-bg-end (#F5F3FF) — gradient end
- *   --text-hero                  clamp(2.5rem, 6vw, 4rem) / 800
- *   --text-lead-lg               1.2rem / 1.7 / 400
- *   --color-primary             (#6366F1)
+ *   --color-illustration-bg-end   (#F5F3FF) — gradient end
+ *   --text-hero                   clamp(2.5rem, 6vw, 4rem) / weight 800
+ *   --text-lead-lg                1.2rem / 1.7 / 400
+ *   --color-primary              (#6366F1)
  *   --color-primary-hover        (#4F46E5)
- *   --color-primary-text        (#FFFFFF)
+ *   --color-primary-text         (#FFFFFF)
+ *   --color-text                 (#1E293B)
+ *   --color-text-muted           (#64748B)
  *   --shadow-primary             0 8px 24px rgba(99,102,241,.35)
- *   --radius-md                 10px
+ *   --shadow-primary-hover       0 12px 32px rgba(99,102,241,.4)
+ *   --radius-md                  10px
  *   --radius-xs                  4px
  *   --duration-base              250ms
- *   --color-focus               (#6366F1)
- *
- * All other values come from design/design-system.md tokens.
+ *   --color-focus                (#6366F1)
  */
 
 'use client'
@@ -27,6 +28,8 @@ import HeroSkeleton from './HeroSkeleton'
 export default function Hero() {
   const [data, setData] = useState<HeroData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [ctaHovered, setCtaHovered] = useState(false)
+  const [ctaFocused, setCtaFocused] = useState(false)
 
   useEffect(() => {
     fetchHeroData()
@@ -42,12 +45,27 @@ export default function Hero() {
     return <HeroSkeleton />
   }
 
+  const ctaBg =
+    ctaHovered
+      ? 'var(--color-primary-hover, #4F46E5)'
+      : 'var(--color-primary, #6366F1)'
+
+  const ctaShadow =
+    ctaFocused
+      ? '0 0 0 4px rgba(99,102,241,.35), 0 0 0 6px var(--color-focus, #6366F1)'
+      : ctaHovered
+      ? 'var(--shadow-primary-hover, 0 12px 32px rgba(99,102,241,.4))'
+      : 'var(--shadow-primary, 0 8px 24px rgba(99,102,241,.35))'
+
+  const ctaTransform = ctaHovered ? 'translateY(-2px)' : 'translateY(0)'
+
   return (
     <section
       aria-label="Hero"
       className="min-h-screen flex items-center justify-center"
       style={{
-        background: 'linear-gradient(180deg, var(--color-illustration-bg, #EEF2FF) 0%, var(--color-illustration-bg-end, #F5F3FF) 100%)',
+        background:
+          'linear-gradient(180deg, var(--color-illustration-bg, #EEF2FF) 0%, var(--color-illustration-bg-end, #F5F3FF) 100%)',
       }}
     >
       <div className="container mx-auto px-6 text-center">
@@ -59,7 +77,8 @@ export default function Hero() {
             lineHeight: 1.15,
             fontWeight: 800,
             color: 'var(--color-text, #1E293B)',
-            fontFamily: 'var(--font-sans), system-ui, -apple-system, sans-serif',
+            fontFamily:
+              'var(--font-sans), system-ui, -apple-system, sans-serif',
           }}
         >
           {data.headline}
@@ -81,7 +100,6 @@ export default function Hero() {
         {/* CTA Button */}
         <a
           href={data.ctaHref}
-          className="btn-primary"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -90,35 +108,18 @@ export default function Hero() {
             fontWeight: 600,
             padding: '14px 32px',
             borderRadius: '10px',
-            backgroundColor: 'var(--color-primary, #6366F1)',
+            backgroundColor: ctaBg,
             color: 'var(--color-primary-text, #FFFFFF)',
-            boxShadow: 'var(--shadow-primary, 0 8px 24px rgba(99,102,241,.35))',
-            transition: 'background-color var(--duration-base, 250ms) ease, transform var(--duration-base, 250ms) ease, box-shadow var(--duration-base, 250ms) ease',
-            outline: 'none',
+            boxShadow: ctaShadow,
+            transform: ctaTransform,
+            transition:
+              'background-color var(--duration-base, 250ms) ease, transform var(--duration-base, 250ms) ease, box-shadow var(--duration-base, 250ms) ease',
+            textDecoration: 'none',
           }}
-          onMouseEnter={(e) => {
-            const el = e.currentTarget
-            el.style.backgroundColor = 'var(--color-primary-hover, #4F46E5)'
-            el.style.transform = 'translateY(-2px)'
-            el.style.boxShadow = '0 12px 32px rgba(99,102,241,.4)'
-          }}
-          onMouseLeave={(e) => {
-            const el = e.currentTarget
-            el.style.backgroundColor = 'var(--color-primary, #6366F1)'
-            el.style.transform = 'translateY(0)'
-            el.style.boxShadow = 'var(--shadow-primary, 0 8px 24px rgba(99,102,241,.35))'
-          }}
-          onFocusVisible={(e) => {
-            const el = e.currentTarget
-            el.style.boxShadow = '0 0 0 4px rgba(99,102,241,.35)'
-            el.style.outline = '2px solid var(--color-focus, #6366F1)'
-            el.style.outlineOffset = '4px'
-          }}
-          onBlur={(e) => {
-            const el = e.currentTarget
-            el.style.boxShadow = 'var(--shadow-primary, 0 8px 24px rgba(99,102,241,.35))'
-            el.style.outline = 'none'
-          }}
+          onMouseEnter={() => setCtaHovered(true)}
+          onMouseLeave={() => setCtaHovered(false)}
+          onFocus={() => setCtaFocused(true)}
+          onBlur={() => setCtaFocused(false)}
         >
           {data.ctaLabel}
         </a>
