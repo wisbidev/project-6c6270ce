@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello Word</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      color: #1E293B; line-height: 1.6; background: #F8FAFC;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    img { max-width: 100%; display: block; }
+    :focus-visible {
+      outline: 3px solid #6366F1; outline-offset: 2px; border-radius: 4px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid #E2E8F0; padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; display: flex;
+      align-items: center; justify-content: space-between; height: 68px;
+    }
+    .nav-logo {
+      font-size: 1.5rem; font-weight: 700; color: #6366F1;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-logo svg { width: 32px; height: 32px; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      font-size: .9375rem; font-weight: 500; color: #475569;
+      transition: color .2s; cursor: pointer;
+    }
+    .nav-links a:hover { color: #6366F1; }
+    .nav-cta {
+      background: #6366F1; color: #fff !important; padding: 10px 20px;
+      border-radius: 8px; font-weight: 600; transition: background .2s;
+    }
+    .nav-cta:hover { background: #4F46E5 !important; }
+    .menu-btn {
+      display: none; background: none; border: none; cursor: pointer;
+      padding: 8px; color: #1E293B;
+    }
+    .menu-btn svg { width: 28px; height: 28px; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 140px 0 100px; text-align: center;
+      background: linear-gradient(135deg, #EEF2FF 0%, #F5F3FF 100%);
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800;
+      line-height: 1.15; letter-spacing: -.02em;
+    }
+    .hero h1 span { color: #6366F1; }
+    .hero p {
+      max-width: 600px; margin: 24px auto 0; font-size: 1.2rem;
+      color: #64748B; line-height: 1.7;
+    }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; margin-top: 40px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px; border-radius: 10px; font-size: 1rem;
+      font-weight: 600; cursor: pointer; border: none;
+      transition: all .25s; 
+    }
+    .btn-primary { background: #6366F1; color: #fff; }
+    .btn-primary:hover { background: #4F46E5; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,.35); }
+    .btn-secondary { background: #fff; color: #1E293B; border: 2px solid #E2E8F0; }
+    .btn-secondary:hover { border-color: #6366F1; color: #6366F1; transform: translateY(-2px); }
+    .hero-illustration { margin-top: 56px; }
+    .hero-illustration svg { max-width: 700px; width: 100%; height: auto; }
+
+    /* ── Features ── */
+    .features { padding: 100px 0; }
+    .section-label {
+      display: inline-block; font-size: .875rem; font-weight: 600;
+      color: #6366F1; text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 800;
+      letter-spacing: -.01em;
+    }
+    .section-desc {
+      max-width: 560px; margin: 16px auto 0; color: #64748B;
+      font-size: 1.1rem;
+    }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px; margin-top: 60px;
+    }
+    .feature-card {
+      background: #fff; border-radius: 16px; padding: 36px 28px;
+      border: 1px solid #E2E8F0; transition: all .3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,.07);
+      border-color: #C7D2FE;
+    }
+    .feature-icon {
+      width: 52px; height: 52px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; color: #fff;
+    }
+    .feature-icon.one { background: linear-gradient(135deg, #6366F1, #8B5CF6); }
+    .feature-icon.two { background: linear-gradient(135deg, #10B981, #34D399); }
+    .feature-icon.three { background: linear-gradient(135deg, #F59E0B, #FBBF24); }
+    .feature-icon.four { background: linear-gradient(135deg, #EC4899, #F472B6); }
+    .feature-icon.five { background: linear-gradient(135deg, #3B82F6, #60A5FA); }
+    .feature-icon.six { background: linear-gradient(135deg, #8B5CF6, #A78BFA); }
+    .feature-card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 12px; }
+    .feature-card p { color: #64748B; font-size: .9375rem; line-height: 1.7; }
+
+    /* ── CTA ── */
+    .cta {
+      padding: 100px 0; background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+      color: #fff; text-align: center;
+    }
+    .cta .section-title { color: #fff; }
+    .cta .section-desc { color: #CBD5E1; }
+    .cta-form {
+      max-width: 480px; margin: 40px auto 0; text-align: left;
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block; font-size: .875rem; font-weight: 600;
+      margin-bottom: 6px; color: #E2E8F0;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%; padding: 12px 16px; border-radius: 8px;
+      border: 2px solid #475569; background: #1E293B; color: #fff;
+      font-size: 1rem; font-family: inherit; transition: border .2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #6366F1; outline: none;
+    }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .form-group .field-error {
+      color: #FCA5A5; font-size: .8125rem; margin-top: 4px; display: none;
+    }
+    .form-group.has-error input,
+    .form-group.has-error textarea { border-color: #EF4444; }
+    .form-group.has-error .field-error { display: block; }
+    .cta-form .btn { width: 100%; justify-content: center; padding: 16px; }
+    .success-state { display: none; }
+    .success-state svg { width: 64px; height: 64px; color: #10B981; margin: 0 auto 20px; }
+    .success-state h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+    .success-state p { color: #CBD5E1; }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 48px 0 24px; background: #0F172A; color: #94A3B8;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px; margin-bottom: 40px;
+    }
+    .footer-brand .nav-logo { color: #A5B4FC; margin-bottom: 12px; }
+    .footer-brand p { font-size: .875rem; line-height: 1.7; max-width: 300px; }
+    .footer-col h4 {
+      color: #F1F5F9; font-size: .875rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em; margin-bottom: 16px;
+    }
+    .footer-col a {
+      display: block; font-size: .875rem; padding: 4px 0;
+      transition: color .2s; cursor: pointer;
+    }
+    .footer-col a:hover { color: #A5B4FC; }
+    .footer-bottom {
+      border-top: 1px solid #1E293B; padding-top: 24px;
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+      font-size: .8125rem;
+    }
+    .footer-socials { display: flex; gap: 16px; }
+    .footer-socials a {
+      width: 36px; height: 36px; border-radius: 8px; border: 1px solid #1E293B;
+      display: flex; align-items: center; justify-content: center;
+      color: #64748B; transition: all .2s;
+    }
+    .footer-socials a:hover {
+      border-color: #6366F1; color: #A5B4FC; background: rgba(99,102,241,.1);
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column; position: absolute;
+        top: 68px; left: 0; right: 0; background: #fff;
+        padding: 20px 24px; gap: 16px; border-bottom: 1px solid #E2E8F0;
+        box-shadow: 0 8px 24px rgba(0,0,0,.08);
+      }
+      .menu-btn { display: block; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; align-items: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ── -->
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">
+        <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#6366F1"/><text x="16" y="22" text-anchor="middle" font-size="18" font-weight="700" fill="#fff" font-family="system-ui">H</text></svg>
+        Hello Word
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="#hero">Home</a>
+        <a href="#features">Features</a>
+        <a href="#contact">Contact</a>
+        <a href="#contact" class="nav-cta">Get Started</a>
+      </div>
+      <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <h1>Say <span>Hello</span> to Your<br>Next Big <span>Word</span></h1>
+      <p>A beautifully simple landing page that introduces your product, captures leads, and grows your audience — all in one place.</p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn btn-primary">Get Started</a>
+        <a href="#features" class="btn btn-secondary">Learn More</a>
+      </div>
+      <div class="hero-illustration">
+        <svg viewBox="0 0 700 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="40" y="60" width="620" height="280" rx="16" fill="#fff" stroke="#E2E8F0" stroke-width="2"/>
+          <rect x="64" y="84" width="120" height="12" rx="6" fill="#6366F1"/>
+          <rect x="64" y="108" width="240" height="8" rx="4" fill="#CBD5E1"/>
+          <rect x="64" y="126" width="200" height="8" rx="4" fill="#CBD5E1"/>
+          <rect x="64" y="160" width="80" height="80" rx="12" fill="#EEF2FF"/>
+          <rect x="164" y="160" width="80" height="80" rx="12" fill="#F5F3FF"/>
+          <rect x="264" y="160" width="80" height="80" rx="12" fill="#ECFDF5"/>
+          <rect x="64" y="264" width="160" height="40" rx="8" fill="#6366F1"/>
+          <rect x="64" y="316" width="120" height="8" rx="4" fill="#CBD5E1"/>
+          <circle cx="580" cy="120" r="40" fill="#EEF2FF"/>
+          <circle cx="580" cy="120" r="16" fill="#6366F1"/>
+          <rect x="540" y="180" width="80" height="12" rx="6" fill="#CBD5E1"/>
+          <rect x="550" y="200" width="60" height="8" rx="4" fill="#E2E8F0"/>
+          <circle cx="140" cy="340" r="6" fill="#10B981"/>
+          <circle cx="160" cy="340" r="6" fill="#10B981"/>
+          <circle cx="180" cy="340" r="6" fill="#10B981"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ── -->
+  <section class="features" id="features">
+    <div class="container" style="text-align:center;">
+      <span class="section-label">Features</span>
+      <h2 class="section-title">Everything you need to make an impact</h2>
+      <p class="section-desc">Designed to help you introduce your product beautifully and convert visitors into customers.</p>
+    </div>
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon one">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>Clean Design</h3>
+          <p>Modern, minimal layout that puts your content front and center. No distractions, just clarity.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon two">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+          </div>
+          <h3>Fully Responsive</h3>
+          <p>Looks perfect on every device — phone, tablet, or desktop. Your audience never misses a beat.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon three">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <h3>Fast Performance</h3>
+          <p>Optimized for speed with lazy loading and minimal dependencies. Your visitors stay engaged.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon four">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <h3>Contact Form</h3>
+          <p>Built-in form with real-time validation and success feedback. Capture leads without a backend.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon five">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h3>Smooth Interactions</h3>
+          <p>Subtle animations and transitions guide the eye. Every click, hover, and scroll feels natural.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon six">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Secure &amp; Reliable</h3>
+          <p>Best practices built in from the start. Your data and your visitors' data stay safe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="cta" id="contact">
+    <div class="container">
+      <span class="section-label" style="color:#A5B4FC;">Get in Touch</span>
+      <h2 class="section-title">Ready to say Hello?</h2>
+      <p class="section-desc">Drop us a message and we'll get back to you within 24 hours.</p>
+
+      <!-- Form -->
+      <form class="cta-form" id="contactForm" novalidate>
+        <div class="form-group" id="nameGroup">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" placeholder="John Doe" required autocomplete="name">
+          <div class="field-error">Please enter your name.</div>
+        </div>
+        <div class="form-group" id="emailGroup">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="john@example.com" required autocomplete="email">
+          <div class="field-error">Please enter a valid email address.</div>
+        </div>
+        <div class="form-group" id="msgGroup">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="Tell us about your project..." required></textarea>
+          <div class="field-error">Please enter a message.</div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          <span id="btnLabel">Send Message</span>
+          <svg id="btnSpinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;animation:spin .8s linear infinite;"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+        </button>
+      </form>
+
+      <!-- Success State -->
+      <div class="success-state" id="successState">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Message Sent!</h3>
+        <p>Thank you for reaching out. We'll be in touch soon.</p>
+        <button class="btn btn-secondary" id="resetFormBtn" style="margin-top:20px;border-color:#475569;color:#E2E8F0;">Send Another Message</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#hero" class="nav-logo" style="justify-content:flex-start;">
+            <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#6366F1"/><text x="16" y="22" text-anchor="middle" font-size="18" font-weight="700" fill="#fff" font-family="system-ui">H</text></svg>
+            Hello Word
+          </a>
+          <p>Making first impressions count since 2024. We build clean, modern landing pages that turn visitors into customers.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+          <a href="#">Pricing</a>
+          <a href="#">Changelog</a>
+          <a href="#">API</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Blog</a>
+          <a href="#">Careers</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Security</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024 Hello Word. All rights reserved.</span>
+        <div class="footer-socials">
+          <a href="#" aria-label="Twitter">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" aria-label="GitHub">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      // ── Mobile menu ──
+      const menuBtn = document.getElementById('menuBtn');
+      const navLinks = document.getElementById('navLinks');
+      menuBtn.addEventListener('click', function() {
+        const open = navLinks.classList.toggle('open');
+        menuBtn.setAttribute('aria-expanded', open);
+      });
+      // Close menu on link click
+      navLinks.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          navLinks.classList.remove('open');
+          menuBtn.setAttribute('aria-expanded', 'false');
+        });
+      });
+      // Close on Escape
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+          navLinks.classList.remove('open');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          menuBtn.focus();
+        }
+      });
+
+      // ── Contact form ──
+      var form = document.getElementById('contactForm');
+      var success = document.getElementById('successState');
+      var btnLabel = document.getElementById('btnLabel');
+      var btnSpinner = document.getElementById('btnSpinner');
+      var submitBtn = document.getElementById('submitBtn');
+      var resetBtn = document.getElementById('resetFormBtn');
+
+      function validateField(id) {
+        var group = document.getElementById(id + 'Group');
+        var input = document.getElementById(id);
+        var valid = false;
+        if (id === 'email') {
+          valid = input.value.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
+        } else {
+          valid = input.value.trim().length > 0;
+        }
+        group.classList.toggle('has-error', !valid);
+        return valid;
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var nameOk = validateField('name');
+        var emailOk = validateField('email');
+        var msgOk = validateField('message');
+        if (!nameOk || !emailOk || !msgOk) return;
+
+        // Loading state
+        btnLabel.textContent = 'Sending...';
+        btnSpinner.style.display = 'block';
+        submitBtn.disabled = true;
+
+        // Simulate send delay
+        setTimeout(function() {
+          form.style.display = 'none';
+          success.style.display = 'block';
+          btnLabel.textContent = 'Send Message';
+          btnSpinner.style.display = 'none';
+          submitBtn.disabled = false;
+        }, 1200);
+      });
+
+      // Real-time validation on blur
+      ['name', 'email', 'message'].forEach(function(id) {
+        document.getElementById(id).addEventListener('blur', function() { validateField(id); });
+      });
+
+      // Reset form
+      resetBtn.addEventListener('click', function() {
+        success.style.display = 'none';
+        form.style.display = 'block';
+        form.reset();
+        document.querySelectorAll('.form-group').forEach(function(g) { g.classList.remove('has-error'); });
+      });
+
+      // ── Smooth scroll for nav links (safari fallback) ──
+      document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+        a.addEventListener('click', function(e) {
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
