@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { FeatureItem } from '@/lib/mock/features-section'
 
 interface FeatureCardProps extends FeatureItem {
@@ -9,7 +10,7 @@ interface FeatureCardProps extends FeatureItem {
 
 /** Inline SVG icons — stroke weight 2px, 26×26px in feature cards */
 function FeatureIcon({ icon }: { icon: FeatureItem['icon'] }) {
-  const icons: Record<FeatureItem['icon'], React.ReactNode> = {
+  const icons: Record<FeatureItem['icon'], ReactNode> = {
     message: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
