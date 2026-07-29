@@ -158,7 +158,7 @@ export default function FeatureCard({
 }: FeatureCardProps) {
   if (loading) {
     return (
-      <div className="bg-white rounded-[16px] border border-[#E2E8F0] p-6">
+      <div className="bg-white rounded-[16px] border border-[#E2E8F0] p-[28px]">
         <FeatureCardSkeleton />
       </div>
     )
@@ -166,7 +166,7 @@ export default function FeatureCard({
 
   return (
     <article
-      className="bg-white rounded-[16px] border border-[#E2E8F0] p-6
+      className="bg-white rounded-[16px] border border-[#E2E8F0] p-[28px]
                  transition-transform duration-300 ease
                  hover:-translate-y-[6px] hover:shadow-[0_12px_40px_rgba(0,0,0,.07)]
                  hover:border-[#C7D2FE]
