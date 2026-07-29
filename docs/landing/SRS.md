@@ -146,7 +146,7 @@ Behaviour:
 | AC-3 | The visitor submits the form | The name field is empty | An inline error "Name is required" appears below the name field; nothing is sent |
 | AC-4 | The visitor submits the form | The email field contains an invalid format | An inline error "Please enter a valid email" appears below the email field; nothing is sent |
 | AC-5 | The visitor submits the form | The message field is empty | An inline error "Message is required" appears below the message field; nothing is sent |
-| AC-6 | The visitor types in a field | The field exceeds the maximum length | The input is capped at the max length; or an error appears when submitted |
+| AC-6 | The visitor types in a field | The field exceeds the maximum length | The input is capped at the max length |
 | AC-7 | The visitor submits while a network error occurs | The submission fails | An inline error message is displayed; the form data is preserved |
 | AC-8 | The page is viewed on mobile (≤767px) | The form renders | All fields and the submit button are fully visible and usable without horizontal scroll |
 
@@ -159,9 +159,9 @@ Behaviour:
 | Invalid input — email malformed | Visitor enters "abc" as email | Inline error "Please enter a valid email address" |
 | Invalid input — message empty | Visitor submits with message empty | Inline error "Message is required" on the message field |
 | Boundary — name max | Name is exactly 100 chars | Accepted |
-| Boundary — name over limit | Name is 101 chars | Truncated client-side or rejected with an error showing the 100-char limit |
+| Boundary — name over limit | Name is 101 chars | Capped at 100 chars — the input's maxlength prevents typing beyond the limit |
 | Boundary — message max | Message is exactly 1000 chars | Accepted |
-| Boundary — message over limit | Message exceeds 1000 chars | Truncated or rejected with an error showing the 1000-char limit |
+| Boundary — message over limit | Message exceeds 1000 chars | Capped at 1000 chars — the textarea's maxlength prevents typing beyond the limit |
 | Network failure | Form submission request fails | An inline error "Something went wrong. Please try again." is shown; form data is preserved |
 | Not permitted | N/A | All actions are available to any Visitor |
 
