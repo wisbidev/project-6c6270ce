@@ -66,10 +66,7 @@ export default function Footer() {
   }
 
   return (
-    <footer
-      className="mt-auto bg-footer-bg text-footer-text"
-      role="contentinfo"
-    >
+    <footer className="mt-auto bg-footer-bg text-footer-text">
       {/* Main footer content */}
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 py-12">
@@ -102,7 +99,7 @@ export default function Footer() {
                         text-footer-text
                         transition-colors duration-200
                         hover:border-focus hover:text-primary-light hover:bg-[rgba(99,102,241,0.1)]
-                        focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-2
+                        focus-visible:outline-2 focus-visible:outline focus-visible:outline-focus focus-visible:outline-offset-2
                       "
                     >
                       <Icon />
@@ -130,7 +127,7 @@ export default function Footer() {
               border border-[#334155]
               transition-colors duration-200
               hover:border-focus hover:text-primary-light hover:bg-[rgba(99,102,241,0.1)]
-              focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-2
+              focus-visible:outline-2 focus-visible:outline focus-visible:outline-focus focus-visible:outline-offset-2
             "
           >
             <ChevronUpIcon />
