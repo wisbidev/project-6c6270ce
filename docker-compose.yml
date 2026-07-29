@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: code/frontend/Dockerfile
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - NEXT_PUBLIC_SITE_URL=http://localhost:${FRONTEND_PORT:-3000}
+      - NEXT_PUBLIC_FORM_ENDPOINT=${NEXT_PUBLIC_FORM_ENDPOINT:-mailto:hello@helloword.com}
+    restart: unless-stopped
