@@ -55,11 +55,11 @@ export const validationMessages = {
     maxLength: 'Name must be 100 characters or less.',
   },
   email: {
-    required: 'Please enter your email.',
+    required: 'Email is required.',
     invalid: 'Please enter a valid email address.',
   },
   message: {
-    required: 'Please enter a message.',
+    required: 'Message is required.',
     maxLength: 'Message must be 1000 characters or less.',
   },
 } as const
