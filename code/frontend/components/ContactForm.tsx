@@ -179,7 +179,7 @@ export default function ContactForm() {
   const cardBg = 'var(--color-bg-dark-surface, #334155)'
   const inputBg = 'rgba(255,255,255,0.08)'
   const inputBorder = 'rgba(255,255,255,0.15)'
-  const inputFocusBorder = 'var(--color-border-focus, #6366F1)'
+  const inputFocusRing = 'var(--color-border-focus, #6366F1)'
 
   return (
     <section
@@ -270,7 +270,8 @@ export default function ContactForm() {
                         background: inputBg,
                         border: `1px solid ${errors.name ? '#EF4444' : inputBorder}`,
                         opacity: isSubmitting ? 0.7 : 1,
-                      }}
+                        '--tw-ring-color': inputFocusRing,
+                      } as React.CSSProperties}
                     />
                     {errors.name ? (
                       <FieldError message={errors.name} />
@@ -304,7 +305,8 @@ export default function ContactForm() {
                         background: inputBg,
                         border: `1px solid ${errors.email ? '#EF4444' : inputBorder}`,
                         opacity: isSubmitting ? 0.7 : 1,
-                      }}
+                        '--tw-ring-color': inputFocusRing,
+                      } as React.CSSProperties}
                     />
                     {errors.email && <FieldError message={errors.email} />}
                   </div>
@@ -333,7 +335,8 @@ export default function ContactForm() {
                         background: inputBg,
                         border: `1px solid ${errors.message ? '#EF4444' : inputBorder}`,
                         opacity: isSubmitting ? 0.7 : 1,
-                      }}
+                        '--tw-ring-color': inputFocusRing,
+                      } as React.CSSProperties}
                     />
                     <div className="flex justify-between items-start mt-1">
                       {errors.message ? (
